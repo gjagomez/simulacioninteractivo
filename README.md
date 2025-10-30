@@ -123,57 +123,8 @@ Los vectores muestran:
 ## Tecnologías Utilizadas
 
 - **Three.js**: Librería 3D para WebGL
-- **HTML5/CSS3**: Estructura y estilos modernos
-- **JavaScript ES6**: Lógica de simulación
 
-## Archivos del Proyecto
 
-```
-Fisica/
-├── index.html              # Estructura HTML con 2 tabs + modo interacción
-├── styles.css              # Estilos modernos con indicadores visuales
-├── simulation.js           # Tab 1: Líneas de Campo E
-├── potential.js            # Tab 2: Potencial V y equipotenciales
-├── README.md               # Documentación principal
-├── EJEMPLOS.md             # Guía detallada Tab 1
-├── POTENCIAL.md            # Guía detallada Tab 2
-├── DIFERENCIAS_TABS.md     # Comparación entre tabs
-├── MODO_INTERACCION.md     # Sistema de modos (rotar/colocar)
-├── INICIO_RAPIDO.txt       # Tutorial paso a paso
-├── RESUMEN_MEJORAS.md      # Log de mejoras implementadas
-├── SOLUCION_PROBLEMAS.md   # Debugging y soluciones
-└── test-tabs.html          # Prueba del sistema de tabs
-```
-
-## Documentación Detallada
-
-- **[EJEMPLOS.md](EJEMPLOS.md)** - Guía completa para usar el Tab 1 (Líneas de Campo)
-  - Ejemplos predefinidos explicados
-  - Cálculos y verificaciones
-  - Ejercicios propuestos
-
-- **[POTENCIAL.md](POTENCIAL.md)** - Guía completa para usar el Tab 2 (Potencial)
-  - Conceptos de potencial eléctrico
-  - Superficies equipotenciales
-  - Mapas de calor y visualizaciones
-  - Relación E = -∇V
-
-- **[INICIO_RAPIDO.txt](INICIO_RAPIDO.txt)** - Empezar en 5 minutos
-  - Pasos para abrir la simulación
-  - Cómo cargar el ejemplo del dipolo
-  - Verificación de resultados
-
-- **[DIFERENCIAS_TABS.md](DIFERENCIAS_TABS.md)** - Comparación completa entre tabs
-  - Qué muestra cada simulación
-  - Cuándo usar cada una
-  - Tabla comparativa
-  - Relación entre E y V
-
-- **[MODO_INTERACCION.md](MODO_INTERACCION.md)** - Sistema de modos de interacción
-  - Modo Rotar Vista vs Modo Colocar Cargas
-  - Evitar clicks accidentales
-  - Flujo de trabajo recomendado
-  - Indicadores visuales
 
 ## Requisitos
 
