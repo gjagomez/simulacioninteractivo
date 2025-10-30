@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Campos Eléctricos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>Simulación Interactiva de Campos Eléctricos</h1>
+            <p>Visualización 3D de campos, potenciales y líneas de fuerza
+                Proyecto final de Fisica 2
+            </p>
+            <button id="info-btn" class="info-btn" title="Información del proyecto">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="field-lines">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 2 L12 22 M2 12 L22 12"></path>
+                </svg>
+                Líneas de Campo
+            </button>
+            <button class="tab-btn" data-tab="potential">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3 L21 3 L21 21 L3 21 Z M3 8 L21 8 M3 13 L21 13 M3 18 L21 18"></path>
+                </svg>
+                Potencial Eléctrico
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content active" id="field-lines">
+            <!-- Canvas 3D para líneas de campo -->
+            <div id="canvas-container-field"></div>
+
+            <!-- Panel de Control - Líneas de Campo -->
+            <div class="control-panel">
+                <div class="panel-header">
+                    <h2>📊 Líneas de Campo Eléctrico</h2>
+                    <p class="panel-subtitle">Visualización de vectores E y líneas de fuerza</p>
+                </div>
+
+                <div class="control-section">
+                    <h3>Modo de Interacción</h3>
+                    <button id="toggle-placement-mode" class="mode-toggle-btn">
+                        <span class="mode-icon">🖱️</span>
+                        <div class="mode-text">
+                            <div class="mode-status">Modo: Rotar Vista</div>
+                            <div class="mode-hint">Click para cambiar a colocar cargas</div>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="control-section">
+                    <h3>Tipo de Carga</h3>
+                    <div class="charge-selector">
+                        <button id="positive-charge" class="charge-btn active">
+                            <span class="charge-icon">+</span>
+                            Positiva
+                        </button>
+                        <button id="negative-charge" class="charge-btn">
+                            <span class="charge-icon">−</span>
+                            Negativa
+                        </button>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>Magnitud de Carga</h3>
+                    <input type="range" id="charge-magnitude" min="1" max="10" value="5" step="1">
+                    <span id="magnitude-value">5</span> µC
+                </div>
+
+                <div class="control-section">
+                    <h3>Densidad de Líneas de Campo</h3>
+                    <input type="range" id="field-density" min="4" max="20" value="12" step="2">
+                    <span id="density-value">12</span>
+                </div>
+
+                <div class="control-section">
+                    <h3>Opciones de Visualización</h3>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="show-field-lines" checked>
+                        <span class="checkmark"></span>
+                        Mostrar líneas de campo
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="show-vectors" checked>
+                        <span class="checkmark"></span>
+                        Mostrar vectores
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="show-grid">
+                        <span class="checkmark"></span>
+                        Mostrar cuadrícula
+                    </label>
+                </div>
+
+                <div class="control-section">
+                    <h3>Ejemplos de Campo E</h3>
+                    <button id="dipole-example" class="example-btn">
+                        <div class="example-title">Dipolo Eléctrico</div>
+                        <div class="example-desc">Líneas de + a -</div>
+                    </button>
+                    <button id="two-positive" class="example-btn">
+                        <div class="example-title">Dos Cargas Positivas</div>
+                        <div class="example-desc">Líneas que se repelen</div>
+                    </button>
+                    <button id="triangle-charges" class="example-btn">
+                        <div class="example-title">Triángulo +/-/+</div>
+                        <div class="example-desc">Campo en 3 direcciones</div>
+                    </button>
+                </div>
+
+                <div class="control-section">
+                    <h3>Calcular Campo en un Punto</h3>
+                    <div class="point-input">
+                        <div class="input-group">
+                            <label>X:</label>
+                            <input type="number" id="point-x" value="0" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Y:</label>
+                            <input type="number" id="point-y" value="1" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Z:</label>
+                            <input type="number" id="point-z" value="0" step="0.1">
+                        </div>
+                    </div>
+                    <button id="calculate-field" class="action-btn">
+                        Calcular Campo
+                    </button>
+                    <div id="field-result" class="field-result"></div>
+                </div>
+
+                <div class="control-section">
+                    <h3>Cargas Colocadas</h3>
+                    <div id="charges-list"></div>
+                </div>
+
+                <div class="control-section">
+                    <button id="clear-all" class="action-btn danger">
+                        Limpiar Todo
+                    </button>
+                    <button id="reset-camera" class="action-btn">
+                        Resetear Cámara
+                    </button>
+                </div>
+
+                <div class="info-section">
+                    <h4>📊 Líneas de Campo E:</h4>
+                    <ul>
+                        <li>Las líneas salen de cargas (+)</li>
+                        <li>Las líneas entran a cargas (−)</li>
+                        <li>Densidad de líneas = intensidad de E</li>
+                        <li>E = k·q/r² (dirección radial)</li>
+                    </ul>
+                    <h4>Controles:</h4>
+                    <ul>
+                        <li>Click: Colocar carga</li>
+                        <li>Arrastrar: Rotar vista 3D</li>
+                        <li>Scroll: Zoom</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Potencial Eléctrico -->
+        <div class="tab-content" id="potential">
+            <!-- Canvas 3D para potencial -->
+            <div id="canvas-container-potential"></div>
+
+            <!-- Panel de Control - Potencial -->
+            <div class="control-panel">
+                <div class="panel-header">
+                    <h2>⚡ Potencial Eléctrico V</h2>
+                    <p class="panel-subtitle">Equipotenciales, mapas de calor y gradientes</p>
+                </div>
+
+                <div class="control-section">
+                    <h3>Modo de Interacción</h3>
+                    <button id="toggle-placement-mode-2" class="mode-toggle-btn">
+                        <span class="mode-icon">🖱️</span>
+                        <div class="mode-text">
+                            <div class="mode-status">Modo: Rotar Vista</div>
+                            <div class="mode-hint">Click para cambiar a colocar cargas</div>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="control-section">
+                    <h3>Tipo de Carga</h3>
+                    <div class="charge-selector">
+                        <button id="positive-charge-2" class="charge-btn active">
+                            <span class="charge-icon">+</span>
+                            Positiva
+                        </button>
+                        <button id="negative-charge-2" class="charge-btn">
+                            <span class="charge-icon">−</span>
+                            Negativa
+                        </button>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>Magnitud de Carga</h3>
+                    <input type="range" id="charge-magnitude-2" min="1" max="10" value="5" step="1">
+                    <span id="magnitude-value-2">5</span> µC
+                </div>
+
+                <div class="control-section">
+                    <h3>Opciones de Visualización</h3>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="show-equipotential" checked>
+                        <span class="checkmark"></span>
+                        Mostrar equipotenciales
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="show-heatmap" checked>
+                        <span class="checkmark"></span>
+                        Mostrar mapa de calor
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="show-field-vectors">
+                        <span class="checkmark"></span>
+                        Mostrar vectores E
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="show-grid-2">
+                        <span class="checkmark"></span>
+                        Mostrar cuadrícula
+                    </label>
+                </div>
+
+                <div class="control-section">
+                    <h3>Configuración de Equipotenciales</h3>
+                    <label>Número de niveles:</label>
+                    <input type="range" id="equipotential-levels" min="5" max="20" value="10" step="1">
+                    <span id="levels-value">10</span>
+                </div>
+
+                <div class="control-section">
+                    <h3>Ejemplos de Potencial</h3>
+                    <button id="dipole-example-2" class="example-btn">
+                        <div class="example-title">Dipolo: V=0 en el centro</div>
+                        <div class="example-desc">Equipotenciales simétricas</div>
+                    </button>
+                    <button id="two-positive-2" class="example-btn">
+                        <div class="example-title">Dos Cargas +: V siempre positivo</div>
+                        <div class="example-desc">Mapa de calor rojo</div>
+                    </button>
+                    <button id="square-charges" class="example-btn">
+                        <div class="example-title">Cuadrado Alterno +/-</div>
+                        <div class="example-desc">Patrón complejo de V</div>
+                    </button>
+                </div>
+
+                <div class="control-section">
+                    <h3>Calcular Potencial en un Punto</h3>
+                    <div class="point-input">
+                        <div class="input-group">
+                            <label>X:</label>
+                            <input type="number" id="point-x-2" value="0" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Y:</label>
+                            <input type="number" id="point-y-2" value="1" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Z:</label>
+                            <input type="number" id="point-z-2" value="0" step="0.1">
+                        </div>
+                    </div>
+                    <button id="calculate-potential" class="action-btn">
+                        Calcular Potencial
+                    </button>
+                    <div id="potential-result" class="field-result"></div>
+                </div>
+
+                <div class="control-section">
+                    <h3>Vista 2D (Corte XY en Z=0)</h3>
+                    <canvas id="heatmap-canvas"></canvas>
+                    <div class="color-scale">
+                        <span>Bajo</span>
+                        <div class="gradient-bar"></div>
+                        <span>Alto</span>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>Cargas Colocadas</h3>
+                    <div id="charges-list-2"></div>
+                </div>
+
+                <div class="control-section">
+                    <button id="clear-all-2" class="action-btn danger">
+                        Limpiar Todo
+                    </button>
+                    <button id="reset-camera-2" class="action-btn">
+                        Resetear Cámara
+                    </button>
+                </div>
+
+                <div class="info-section">
+                    <h4>⚡ Potencial Eléctrico V:</h4>
+                    <ul>
+                        <li>V = k·q/r (escalar, no vector)</li>
+                        <li>Equipotenciales ⊥ líneas de E</li>
+                        <li>E = -∇V (gradiente negativo)</li>
+                        <li>🔵 Azul = V negativo | 🔴 Rojo = V positivo</li>
+                    </ul>
+                    <h4>Interactivo:</h4>
+                    <ul>
+                        <li>Click en 3D: Colocar carga</li>
+                        <li>Click en canvas 2D: Calcular V</li>
+                        <li>Mapa calor: Ver distribución V</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Información de Estudiantes -->
+    <div id="student-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" id="close-modal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <h2>Proyecto de Física 2</h2>
+                <p class="modal-subtitle">Simulación de Campos Eléctricos</p>
+            </div>
+
+            <div class="modal-body">
+                <h3>Desarrollado por:</h3>
+
+                <div class="student-card">
+                    <div class="student-avatar">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="student-info">
+                        <h4 class="student-name">Javier Gomez</h4>
+                        <div class="student-detail">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span>Carnet: <strong>1990-07-12940</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="student-card">
+                    <div class="student-avatar">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="student-info">
+                        <h4 class="student-name">Luis René López Hernández</h4>
+                        <div class="student-detail">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span>Carnet: <strong>1990-20-11078</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer-info">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>Universidad Mariano Gálvez de Guatemala</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js desde CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- OrbitControls -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- Sistema de tabs (inline para evitar conflictos) -->
+    <script>
+        // Sistema de navegación por tabs
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Initializing tab system...');
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            console.log('Tab buttons found:', tabButtons.length);
+            console.log('Tab contents found:', tabContents.length);
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tabId = button.getAttribute('data-tab');
+                    console.log('Clicked tab:', tabId);
+
+                    // Remover active de todos los botones
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+
+                    // Añadir active al botón clickeado
+                    button.classList.add('active');
+
+                    // Ocultar todos los contenidos
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        content.style.display = 'none';
+                    });
+
+                    // Mostrar el contenido seleccionado
+                    const activeContent = document.getElementById(tabId);
+                    if (activeContent) {
+                        activeContent.classList.add('active');
+                        activeContent.style.display = 'flex';
+                        console.log('Activated tab:', tabId);
+
+                        // Trigger resize para que los canvas se ajusten
+                        setTimeout(() => {
+                            window.dispatchEvent(new Event('resize'));
+                        }, 100);
+                    }
+                });
+            });
+
+            console.log('Tab system initialized');
+        });
+
+        // Sistema de modal de información
+        const modal = document.getElementById('student-modal');
+        const infoBtn = document.getElementById('info-btn');
+        const closeBtn = document.getElementById('close-modal');
+
+        // Abrir modal
+        infoBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        // Cerrar modal con botón X
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // Cerrar modal al hacer click fuera del contenido
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Cerrar modal con tecla ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                modal.classList.remove('active');
+            }
+        });
+    </script>
+
+    <!-- Scripts de simulación -->
+    <script src="simulation.js"></script>
+    <script src="potential.js"></script>
+</body>
+</html>
